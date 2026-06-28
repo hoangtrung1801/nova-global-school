@@ -7,10 +7,7 @@ const NAV_ITEMS = [
   { href: '#dao-tao', label: 'Đào tạo' },
   { href: '#co-so-vat-chat', label: 'Cơ sở vật chất' },
   { href: '#hoc-phi', label: 'Học phí' },
-  { href: '#nhan-su', label: 'Nhân sự' },
   { href: '#tai-chinh', label: 'Tài chính' },
-  { href: '#kich-ban', label: 'Kịch bản' },
-  { href: '#tai-lieu', label: 'Tài liệu' },
   { href: '#thu-vien', label: 'Thư viện' },
 ] as const
 
@@ -30,8 +27,6 @@ const FACILITY_IMAGES = [
   siteContent.gallery[1],
   siteContent.gallery[5],
 ] as const
-
-const SCENARIO_TONES = ['tone-risk', 'tone-caution', 'tone-plan', 'tone-growth', 'tone-peak'] as const
 
 function sectionCover(src: string) {
   return { '--section-cover': `url(${src})` } as CSSProperties
@@ -58,7 +53,6 @@ function SectionHeading({
 export function ReferencePage() {
   const pageRef = useRef<HTMLDivElement>(null)
   const [menuOpen, setMenuOpen] = useState(false)
-  const [activeScenario, setActiveScenario] = useState(2)
   const [isScrolled, setIsScrolled] = useState(false)
   const [activeSectionId, setActiveSectionId] = useState(SECTION_IDS[0])
 
@@ -198,8 +192,6 @@ export function ReferencePage() {
     }
   }, [])
 
-  const selectedScenario = siteContent.scenarios[activeScenario]
-
   return (
     <div ref={pageRef} className="nova-page">
       <div className="nova-page__backdrop" aria-hidden="true" />
@@ -300,11 +292,11 @@ export function ReferencePage() {
             <div className="hero-visual">
               <article className="hero-card glow-card">
                 <div className="hero-card__overlay hero-card__overlay--static">
-                  <p className="hero-card__tag">Masterplan giáo dục</p>
-                  <h2>Hạ tầng hiện đại, mật độ thấp, định hướng quốc tế</h2>
+                  <p className="hero-card__tag">Trường liên cấp quốc tế</p>
+                  <h2>Campus hiện đại cho học sinh THCS - THPT</h2>
                   <p>
-                    Không gian học tập được quy hoạch để đồng thời phục vụ thành tích học thuật,
-                    trải nghiệm đa văn hóa và vận hành dài hạn bền vững.
+                    Quy hoạch 21.390 m², công suất 920 học sinh, tập trung vào học thuật,
+                    ngoại ngữ và trải nghiệm học đường an toàn.
                   </p>
                 </div>
               </article>
@@ -326,8 +318,8 @@ export function ReferencePage() {
             <div className="site-shell">
               <SectionHeading
                 eyebrow="Giới thiệu tổng quan"
-                title="Một mô hình trường liên cấp được đặt đúng vị trí, đúng quy mô và đúng thị trường"
-                body="Toàn bộ nội dung phần này được lấy từ blueprint trong thư mục content và triển khai lại thành bố cục dễ đọc hơn trên landing page."
+                title="Trường liên cấp tại Hòa Xuân, Cẩm Lệ, Đà Nẵng"
+                body="Các thông tin chính về vị trí, chủ đầu tư và quy mô được rút gọn để phụ huynh quét nhanh."
               />
 
               <div className="overview-grid">
@@ -357,7 +349,7 @@ export function ReferencePage() {
             <div className="site-shell">
               <SectionHeading
                 eyebrow="Chương trình đào tạo cốt lõi"
-                title="Khung học thuật được thiết kế để đi xa hơn mô hình luyện thi thuần túy"
+                title="Chương trình học cân bằng giữa học thuật, ngoại ngữ và kỹ năng"
                 body="Nova Global School đặt ngoại ngữ, năng lực học thuật và phát triển con người trong cùng một lộ trình."
               />
 
@@ -380,17 +372,17 @@ export function ReferencePage() {
               <div className="facilities-summary">
                 <SectionHeading
                   eyebrow="Cơ sở vật chất và hạ tầng kỹ thuật"
-                  title="Hệ sinh thái vận hành được tổ chức để hỗ trợ cả học tập lẫn đời sống học đường"
-                  body="Các hạng mục trong thư mục content được chuyển thành từng cụm thông tin riêng để phụ huynh và nhà đầu tư quét nhanh."
+                  title="Campus hiện đại cho học tập, thể thao và đời sống học đường"
+                  body="Các hạng mục quan trọng được nhóm theo nhu cầu học tập, sinh hoạt và an toàn."
                 />
 
                 <article className="spotlight-card glow-card">
                   <img alt={siteContent.gallery[1].alt} src={siteContent.gallery[1].src} />
                   <div className="spotlight-card__body">
-                    <h3>Không gian học tập mở, vận hành theo chuẩn dịch vụ trường quốc tế</h3>
+                    <h3>Không gian học tập mở, vận hành theo chuẩn trường hiện đại</h3>
                     <p>
-                      Từ phòng học đón sáng tự nhiên đến hệ thống nhà ăn, an ninh và xe buýt học
-                      đường, toàn bộ cấu phần được định hướng như một campus có chất lượng sống cao.
+                      Phòng học, nhà ăn, an ninh và xe buýt được tổ chức như một campus học đường
+                      an toàn, dễ vận hành.
                     </p>
                   </div>
                 </article>
@@ -416,7 +408,7 @@ export function ReferencePage() {
             <div className="site-shell">
               <SectionHeading
                 eyebrow="Chính sách học phí và ưu đãi tuyển sinh"
-                title="Một cấu trúc học phí rõ ràng, đi kèm cơ chế giữ giá và khuyến khích đăng ký sớm"
+                title="Học phí rõ ràng cho THCS và THPT"
               />
 
               <div className="tuition-layout">
@@ -442,32 +434,6 @@ export function ReferencePage() {
             </div>
           </section>
 
-          <section id="nhan-su" className="content-section content-section--soft">
-            <div className="site-shell">
-              <SectionHeading
-                eyebrow="Quy mô và cơ cấu nhân sự"
-                title="Tổ chức nhân sự được thiết kế để giữ mật độ phục vụ thấp và vận hành đồng bộ"
-              />
-
-              <div className="hr-stats">
-                {siteContent.hr.stats.map((stat) => (
-                  <article key={stat.label} className="stat-card glow-card">
-                    <strong>{stat.value}</strong>
-                    <p>{stat.label}</p>
-                  </article>
-                ))}
-              </div>
-
-              <div className="card-grid">
-                {siteContent.hr.groups.map((group) => (
-                  <article key={group.title} className="feature-card glow-card">
-                    <h3>{group.title}</h3>
-                    <p>{group.body}</p>
-                  </article>
-                ))}
-              </div>
-            </div>
-          </section>
         </div>
 
         <div className="section-band" style={sectionCover(siteContent.gallery[2].src)}>
@@ -476,7 +442,7 @@ export function ReferencePage() {
               <div>
                 <SectionHeading
                   eyebrow="Thẩm định hiệu quả tài chính"
-                  title="Khối tài chính được trình bày lại theo hai lớp: cơ cấu vốn và chỉ số vận hành"
+                  title="Các chỉ số tài chính chính của dự án"
                 />
 
                 <div className="card-grid">
@@ -500,66 +466,10 @@ export function ReferencePage() {
                 </div>
 
                 <article className="copy-card glow-card">
-                  <h3>Đóng góp ngân sách và ưu đãi xã hội hóa giáo dục</h3>
+                  <h3>Đóng góp địa phương</h3>
                   <p>{siteContent.finance.social}</p>
                 </article>
               </div>
-            </div>
-          </section>
-
-          <section id="kich-ban" className="content-section content-section--soft">
-            <div className="site-shell scenario-layout">
-              <SectionHeading
-                eyebrow="Phân tích độ nhạy và tình huống rủi ro"
-                title="Bộ chuyển đổi kịch bản giúp đọc nhanh biên độ tài chính trong từng trạng thái vận hành"
-              />
-
-              <div className="scenario-tabs" role="tablist" aria-label="Kịch bản vận hành">
-                {siteContent.scenarios.map((scenario, index) => (
-                  <button
-                    key={scenario.name}
-                    aria-selected={activeScenario === index}
-                    className={`scenario-tab ${SCENARIO_TONES[index]}${
-                      activeScenario === index ? ' is-active' : ''
-                    }`}
-                    role="tab"
-                    type="button"
-                    onClick={() => setActiveScenario(index)}
-                  >
-                    {scenario.name}
-                  </button>
-                ))}
-              </div>
-
-              <article
-                key={selectedScenario.name}
-                className={`scenario-panel glow-card ${SCENARIO_TONES[activeScenario]}`}
-              >
-                <div className="scenario-panel__headline">
-                  <div>
-                    <p className="scenario-panel__eyebrow">{selectedScenario.assumption}</p>
-                    <h3>{selectedScenario.name}</h3>
-                  </div>
-                  <span className="scenario-panel__status">{selectedScenario.status}</span>
-                </div>
-
-                <div className="scenario-panel__metrics">
-                  <div>
-                    <p>NPV</p>
-                    <strong>{selectedScenario.npv}</strong>
-                  </div>
-                  <div>
-                    <p>IRR</p>
-                    <strong>{selectedScenario.irr}</strong>
-                  </div>
-                  <div>
-                    <p>Hoàn vốn</p>
-                    <strong>{selectedScenario.payback}</strong>
-                  </div>
-                </div>
-
-                <p className="scenario-panel__summary">{selectedScenario.summary}</p>
-              </article>
             </div>
           </section>
         </div>
@@ -568,14 +478,14 @@ export function ReferencePage() {
           <section id="tai-lieu" className="content-section">
             <div className="site-shell">
               <SectionHeading
-                eyebrow="Download Center"
-                title="Một điểm truy cập duy nhất cho hồ sơ nội dung dự án"
+                eyebrow="Hồ sơ PDF"
+                title="Tải hồ sơ đầy đủ của Nova Global School"
               />
 
               <article className="download-card glow-card">
                 <div>
                   <p className="download-card__eyebrow">{siteContent.downloads.title}</p>
-                  <h3>Blueprint nội dung và thông số triển khai landing page</h3>
+                  <h3>Bản vẽ, chỉ tiêu và dữ liệu dự án</h3>
                   <p>{siteContent.downloads.body}</p>
                 </div>
 
@@ -590,7 +500,7 @@ export function ReferencePage() {
             <div className="site-shell">
               <SectionHeading
                 eyebrow="Thư viện hình ảnh và phối cảnh 3D"
-                title="Toàn bộ hình ảnh trên trang được lấy từ thư mục src/content/images"
+                title="Hình ảnh campus, lớp học, thư viện và khu thể thao"
               />
 
               <div className="gallery-grid">

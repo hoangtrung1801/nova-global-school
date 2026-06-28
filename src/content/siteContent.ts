@@ -9,21 +9,21 @@ import contentPdf from './section-content.pdf'
 export const siteContent = {
   title: 'NOVA GLOBAL SCHOOL',
   subtitle:
-    'Kiến tạo bệ phóng vững chắc cho thế hệ công dân toàn cầu tương lai tại khu vực phía Nam Đà Nẵng.',
+    'Trường liên cấp THCS - THPT tại Hòa Xuân, Cẩm Lệ, Đà Nẵng.',
   statement:
-    'Tại Nova Global School, chúng tôi tin rằng mỗi học sinh là một cá thể độc lập mang tiềm năng vô hạn. Bằng việc kết hợp hài hòa giữa triết lý giáo dục toàn diện, hạ tầng công nghệ tiên tiến và môi trường đa văn hóa, nhà trường cam kết chuẩn bị cho các em không chỉ kiến thức học thuật xuất sắc mà còn là bản lĩnh, tư duy phản biện và lòng trắc ẩn để tự tin bước ra thế giới.',
+    'Nova Global School kết hợp chương trình học thuật, tiếng Anh tăng cường và cơ sở vật chất hiện đại để chuẩn bị cho học sinh năng lực hội nhập.',
   ctas: [
-    { label: 'Đăng Ký Tuyển Sinh Năm Học Mới', href: '#lien-he' },
-    { label: 'Khám Phá Khuôn Viên Trường 3D', href: '#thu-vien' },
+    { label: 'Đăng ký tư vấn tuyển sinh', href: '#lien-he' },
+    { label: 'Xem khuôn viên trường', href: '#thu-vien' },
   ],
   heroImage: campusHero,
   overview: {
     location:
-      'Dự án Trường liên cấp Nova Global School được xây dựng tại khu vực nút giao đường Đá Bàn 7, thuộc phường Hòa Xuân, quận Cẩm Lệ, thành phố Đà Nẵng. Đây là vị trí chiến lược nằm trong dải quy hoạch đô thị mới, kết nối trực tiếp với trục huyết mạch Võ Chí Công và Quốc lộ 1A. Vị trí này không chỉ tối ưu hóa bán kính đưa đón học sinh từ các quận trung tâm như Hải Châu, Thanh Khê, Ngũ Hành Sơn mà còn mở rộng khả năng tiếp cận khu vực đô thị vệ tinh phía Bắc tỉnh Quảng Nam.',
+      'Nova Global School nằm trên đường Đá Bàn 7, phường Hòa Xuân, quận Cẩm Lệ, Đà Nẵng; kết nối nhanh với Võ Chí Công, Quốc lộ 1A và các khu đô thị phía Nam thành phố.',
     developer:
-      'Công trình được đầu tư bài bản và toàn diện bởi Tập đoàn Nguyễn Hoàng (NHG) - tổ chức giáo dục tư thục hàng đầu Việt Nam. Với kinh nghiệm vận hành chuỗi hệ thống trường quốc tế uy tín, NHG đem đến Nova Global School mô hình quản trị tiên tiến, đảm bảo sự bền vững về năng lực tài chính và chất lượng chuyên môn xuyên suốt vòng đời dự án.',
+      'Dự án được phát triển theo định hướng của Tập đoàn Nguyễn Hoàng (NHG), tập trung vào mô hình trường tư thục hiện đại và vận hành bền vững.',
     scale:
-      'Nova Global School tập trung tối ưu hóa trải nghiệm giáo dục cho học sinh lứa tuổi thanh thiếu niên từ 11 đến 17 tuổi, bao gồm hai cấp học THCS và THPT. Với tổng diện tích đất quy hoạch 21.390 m² và tổng diện tích sàn xây dựng 12.643 m², trường thiết lập quy mô đào tạo chuẩn hóa phục vụ tối đa 920 học sinh trong một không gian học tập mật độ thấp, thông thoáng và an toàn.',
+      'Trường phục vụ học sinh 11 - 17 tuổi ở hai cấp THCS và THPT, với công suất tối đa 920 học sinh trên khu đất 21.390 m².',
     stats: [
       { value: '21.390 m²', label: 'Tổng diện tích đất quy hoạch' },
       { value: '12.643 m²', label: 'Tổng diện tích sàn xây dựng' },
@@ -34,49 +34,49 @@ export const siteContent = {
   academic: [
     {
       title: 'Sự giao thoa chuẩn mực',
-      body: 'Chương trình học tại Nova Global School là sự kết hợp tinh hoa giữa khung kiến thức cốt lõi của Bộ Giáo dục và Đào tạo Việt Nam (MOET) và các mô hình đánh giá năng lực tư duy quốc tế, giúp học sinh đạt kết quả cao trong các kỳ thi quốc gia đồng thời sẵn sàng hội nhập chuyển tiếp.',
+      body: 'Chương trình kết hợp khung MOET với định hướng đánh giá năng lực, giúp học sinh vững kiến thức và sẵn sàng chuyển tiếp.',
     },
     {
       title: 'Ngoại ngữ là chìa khóa mở cửa thế giới',
-      body: 'Nhà trường thiết kế thời lượng học tiếng Anh chuyên sâu vượt trội, tương tác trực tiếp với giáo viên bản ngữ. Lộ trình đào tạo được cá nhân hóa nhằm hướng tới việc giúp học sinh đạt năng lực ngoại ngữ lưu loát và sẵn sàng chinh phục IELTS hoặc VSTEP B2/C1 ngay khi tốt nghiệp THPT.',
+      body: 'Tiếng Anh tăng cường cùng giáo viên bản ngữ hỗ trợ học sinh hướng tới IELTS hoặc VSTEP B2/C1 khi tốt nghiệp.',
     },
     {
       title: 'Triết lý phát triển 5 nền tảng',
-      body: 'Khung chương trình hành động tại trường tập trung phát triển cân bằng năng lực học thuật, thể chất học đường, tư duy phản biện và sáng tạo, trí tuệ cảm xúc và đạo đức, cùng kỹ năng mềm thế kỷ 21.',
+      body: 'Lộ trình học cân bằng học thuật, thể chất, tư duy phản biện, cảm xúc - đạo đức và kỹ năng thế kỷ 21.',
     },
   ],
   facilities: [
     {
       title: 'Khối lớp học và hành chính hiệu bộ',
-      body: 'Công trình trọng điểm cao 4 tầng và 1 tầng tum với tổng diện tích sàn 10.559 m². Hệ thống phòng học được thiết kế đón ánh sáng tự nhiên tối đa, trang bị bảng tương tác thông minh, điều hòa trung tâm Comfort-Air và hệ thống bàn ghế chống học đường cong vẹo cột sống.',
+      body: 'Khối 4 tầng và 1 tầng tum, diện tích 10.559 m², gồm phòng học lấy sáng tự nhiên, bảng tương tác và điều hòa trung tâm.',
     },
     {
       title: 'Khối nhà bộ môn và thí nghiệm chuyên sâu',
-      body: 'Khu nhà 3 tầng với diện tích sàn 1.062 m² tập trung chuỗi phòng thí nghiệm Vật lý, Hóa học, Sinh học đạt chuẩn an toàn quốc tế với hệ thống hút mùi tạo áp âm; đồng thời bố trí các phòng chức năng Âm nhạc, Hội họa, STEM Lab và Robot học.',
+      body: 'Khu 3 tầng, diện tích 1.062 m², tích hợp phòng thí nghiệm, Âm nhạc, Hội họa, STEM Lab và Robot học.',
     },
     {
       title: 'Khu liên hợp thể thao ngoài trời và đường chạy',
-      body: 'Tổ hợp rèn luyện thể chất gồm 2 sân bóng đá mặt cỏ nhân tạo chất lượng cao với kích thước dải nền 35 m x 54 m. Bao quanh là hệ thống đường chạy điền kinh lát nền vật liệu tổng hợp sơn epoxy màu đỏ chống trơn trượt có diện tích 853,5 m².',
+      body: 'Hai sân bóng đá cỏ nhân tạo và đường chạy 853,5 m² tạo không gian rèn luyện thể chất ngoài trời.',
     },
     {
       title: 'Khối nhà đa năng',
-      body: 'Không gian khối hộp 1 tầng cao 9,95 m với diện tích 1.022 m² vượt nhịp lớn bằng vì kèo thép. Bên trong tích hợp sàn thi đấu PVC đa năng, khu sân khấu biểu diễn rộng 27 m² và khán đài kiên cố rộng 78 m² phục vụ đại hội cùng sự kiện văn hóa nghệ thuật.',
+      body: 'Nhà đa năng 1.022 m² có sàn thi đấu PVC, sân khấu và khán đài cho sự kiện học đường.',
     },
     {
       title: 'Hệ thống hậu cần và an toàn nội khu',
-      body: 'Khu vực nhà ăn và phòng ăn tập thể rộng 336 m² vận hành theo cơ chế một chiều, cung cấp thực đơn dinh dưỡng khoa học. Hạ tầng kỹ thuật bao gồm trạm biến áp riêng, bể chứa nước ngầm dung tích 224 m³ và mạng lưới camera giám sát AI 24/7 cùng lộ trình xe buýt học đường an toàn.',
+      body: 'Nhà ăn 336 m², hạ tầng kỹ thuật riêng, camera giám sát và lộ trình xe buýt hỗ trợ an toàn học đường.',
     },
   ],
   tuition: [
     {
       title: 'Học phí khối THCS',
       value: '63 triệu VNĐ / năm học',
-      body: 'Tương đương 7 triệu VNĐ mỗi tháng.',
+      body: 'Khoảng 7 triệu VNĐ mỗi tháng.',
     },
     {
       title: 'Học phí khối THPT',
       value: '81 triệu VNĐ / năm học',
-      body: 'Tương đương 9 triệu VNĐ mỗi tháng.',
+      body: 'Khoảng 9 triệu VNĐ mỗi tháng.',
     },
     {
       title: 'Chi phí đồng phục',
@@ -85,9 +85,9 @@ export const siteContent = {
     },
   ],
   incentives: [
-    'Cam kết giữ vững lộ trình học phí ổn định, không tăng quá 5% mỗi năm theo biến động lạm phát.',
-    'Chiết khấu thẳng 5% trên tổng học phí khi phụ huynh hoàn tất đóng phí nguyên năm trước thời hạn quy định.',
-    'Ưu đãi miễn giảm lên tới 10% học phí cho gia đình có từ con thứ hai cùng theo học tại hệ thống trường hoặc các gói học bổng Nova Pioneer dành cho học sinh có thành tích đầu vào xuất sắc.',
+    'Lộ trình học phí ổn định, mức tăng dự kiến không quá 5% mỗi năm.',
+    'Giảm 5% khi phụ huynh đóng học phí nguyên năm trước hạn.',
+    'Ưu đãi tới 10% cho gia đình có từ con thứ hai hoặc học sinh đạt học bổng đầu vào.',
   ],
   hr: {
     stats: [
@@ -132,7 +132,7 @@ export const siteContent = {
       { label: 'Hệ số trả nợ dài hạn (DSCR)', value: '3,247' },
     ],
     social:
-      'Dự án Nova Global School không chỉ tối ưu hóa lợi ích kinh tế cho doanh nghiệp mà còn đóng góp trực tiếp vào sự thịnh vượng của địa phương. Dự kiến trong vòng đời 15 năm hoạt động ổn định, dự án đóng góp lũy kế 130,13 tỷ VNĐ vào ngân sách Nhà nước thông qua các nghĩa vụ thuế. Đồng thời, nhờ đáp ứng trọn vẹn các tiêu chí của chính sách xã hội hóa giáo dục, dự án được hỗ trợ miễn giảm 60% tiền thuê đất dọc thời hạn dự án và ưu đãi miễn thuế thu nhập doanh nghiệp trong 4 năm đầu vận hành.',
+      'Trong 15 năm vận hành, dự án dự kiến đóng góp 130,13 tỷ VNĐ vào ngân sách và hưởng ưu đãi xã hội hóa giáo dục theo quy định.',
   },
   scenarios: [
     {
@@ -187,8 +187,8 @@ export const siteContent = {
     },
   ],
   downloads: {
-    title: 'Hồ sơ nội dung dự án',
-    body: 'Tổng hợp toàn bộ blueprint nội dung, chỉ tiêu tài chính, cơ cấu nhân sự và định hướng trải nghiệm cho landing page Nova Global School.',
+    title: 'Hồ sơ dự án Nova Global School',
+    body: 'Tải hồ sơ PDF để xem bản vẽ, chỉ tiêu tài chính, cơ cấu nhân sự và thông tin triển khai chi tiết.',
     href: contentPdf,
   },
   gallery: [
