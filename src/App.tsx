@@ -1,24 +1,25 @@
 import { useEffect, useRef, useState } from 'react'
 import { ReferencePage } from './components/ReferencePage'
+import { siteContent } from './content/siteContent'
 import '../references/css/990799c9a52e5c07.css'
 import './App.css'
 
-const REFERENCE_TITLE = 'Nhà ga hàng hóa Cát Bi - Cảng hàng không quốc tế Cát Bi'
+const REFERENCE_TITLE = `${siteContent.title} | Landing Page`
 const HTML_CLASS_NAME = '__variable_bd93a5'
 
 const CHAT_COPY = {
   closeLabel: 'Đóng khung chat',
   greeting:
-    'Dạ em chào thầy/cô ạ. Em là Minh Châu, sinh viên thực hiện đồ án Nhà ga hàng hóa Cát Bi. Thầy/cô muốn tìm hiểu điều gì về đồ án của em ạ?',
+    'Xin chào, em là trợ lý thông tin của đồ án Nova Global School. Thầy/cô muốn tìm hiểu về học phí, quy mô, cơ sở vật chất hay hiệu quả tài chính ạ?',
   openLabel: 'Mở khung chat tư vấn',
   placeholder: 'Nhập câu hỏi của bạn…',
   sendLabel: 'Gửi',
-  studentSubtitle: 'Sinh viên thực hiện đồ án',
-  studentTitle: 'Minh Châu',
+  studentSubtitle: 'Nova Global School',
+  studentTitle: 'Trợ lý đồ án',
   suggestions: [
-    'Công suất nhà ga là bao nhiêu?',
-    'Diện tích khu đất dự án?',
-    'Kết cấu vỏ bao che dùng vật liệu gì?',
+    'Học phí THCS và THPT là bao nhiêu?',
+    'Quy mô tuyển sinh tối đa của trường?',
+    'Tổng mức đầu tư dự án là bao nhiêu?',
   ],
 } as const
 
@@ -28,32 +29,85 @@ type ChatMessage = {
   text: string
 }
 
-function answerQuestion(question: string) {
-  const normalized = question.toLowerCase()
+function normalizeVietnamese(value: string) {
+  return value
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .replace(/đ/g, 'd')
+    .replace(/Đ/g, 'D')
+    .toLowerCase()
+}
 
-  if (normalized.includes('công suất') || normalized.includes('cong suat')) {
-    return 'Công suất khai thác của nhà ga là 100.000 tấn mỗi năm và có thể mở rộng lên 250.000 tấn mỗi năm.'
+function answerQuestion(question: string) {
+  const normalized = normalizeVietnamese(question)
+
+  if (normalized.includes('hoc phi') && normalized.includes('thcs')) {
+    return `${siteContent.tuition[0].title} là ${siteContent.tuition[0].value}. ${siteContent.tuition[0].body}`
   }
 
-  if (normalized.includes('diện tích') || normalized.includes('dien tich')) {
-    return 'Diện tích khu đất của dự án là 23.876,3 m².'
+  if (normalized.includes('hoc phi') && normalized.includes('thpt')) {
+    return `${siteContent.tuition[1].title} là ${siteContent.tuition[1].value}. ${siteContent.tuition[1].body}`
   }
 
   if (
-    normalized.includes('vỏ bao che') ||
-    normalized.includes('vo bao che') ||
-    normalized.includes('vật liệu') ||
-    normalized.includes('vat lieu') ||
-    normalized.includes('sandwich')
+    normalized.includes('hoc phi') ||
+    normalized.includes('dong phuc') ||
+    normalized.includes('uu dai')
   ) {
-    return 'Vỏ bao che của công trình sử dụng Sandwich Panel từ nền đến mái, kết hợp khung thép tiền chế nhịp lớn.'
+    return `${siteContent.tuition[0].value} cho THCS, ${siteContent.tuition[1].value} cho THPT và ${siteContent.tuition[2].value} cho đồng phục. Ngoài ra còn có chiết khấu đóng sớm 5% và ưu đãi tới 10% cho gia đình có từ con thứ hai cùng theo học.`
   }
 
-  if (normalized.includes('chủ đầu tư') || normalized.includes('chu dau tu')) {
-    return 'Chủ đầu tư của dự án là Tổng công ty Cảng hàng không Việt Nam, ACV.'
+  if (
+    normalized.includes('quy mo') ||
+    normalized.includes('hoc sinh') ||
+    normalized.includes('cong suat')
+  ) {
+    return `Trường phục vụ tối đa ${siteContent.overview.stats[2].value} học sinh, tập trung cho lứa tuổi ${siteContent.overview.stats[3].value}. ${siteContent.overview.scale}`
   }
 
-  return 'Em đã ghi nhận câu hỏi của thầy/cô. Trong phiên bản React này, em đang trả lời các thông tin tổng quan về công suất, quy mô, vật liệu vỏ bao che và chủ đầu tư của đồ án.'
+  if (normalized.includes('dien tich') || normalized.includes('quy hoach')) {
+    return `Quy mô đất là ${siteContent.overview.stats[0].value} và tổng diện tích sàn xây dựng là ${siteContent.overview.stats[1].value}.`
+  }
+
+  if (
+    normalized.includes('dau tu') ||
+    normalized.includes('tong muc') ||
+    normalized.includes('von')
+  ) {
+    return `${siteContent.finance.capital[0].label}: ${siteContent.finance.capital[0].value}. Cơ cấu vốn gồm ${siteContent.finance.capital[1].value} vốn chủ sở hữu và ${siteContent.finance.capital[2].value} vốn tín dụng tài trợ.`
+  }
+
+  if (
+    normalized.includes('tai chinh') ||
+    normalized.includes('npv') ||
+    normalized.includes('irr') ||
+    normalized.includes('hoan von')
+  ) {
+    return `Các chỉ số chính gồm NPV ${siteContent.finance.metrics[0].value}, IRR ${siteContent.finance.metrics[1].value}, B/C ${siteContent.finance.metrics[2].value} và thời gian hoàn vốn ${siteContent.finance.metrics[3].value}.`
+  }
+
+  if (normalized.includes('vi tri') || normalized.includes('dia diem') || normalized.includes('da nang')) {
+    return siteContent.overview.location
+  }
+
+  if (
+    normalized.includes('nhan su') ||
+    normalized.includes('giao vien') ||
+    normalized.includes('ban giam hieu')
+  ) {
+    return `Nhà trường có ${siteContent.hr.stats[0].value} nhân sự toàn thời gian, ${siteContent.hr.stats[1].value} giáo viên đứng lớp và tỷ lệ ${siteContent.hr.stats[2].value}. ${siteContent.hr.groups[0].body}`
+  }
+
+  if (
+    normalized.includes('co so vat chat') ||
+    normalized.includes('phong hoc') ||
+    normalized.includes('the thao') ||
+    normalized.includes('thi nghiem')
+  ) {
+    return `${siteContent.facilities[0].body} ${siteContent.facilities[2].body}`
+  }
+
+  return 'Em đã ghi nhận câu hỏi. Trong phiên bản này, em có thể hỗ trợ nhanh các nội dung về vị trí dự án, quy mô tuyển sinh, học phí, cơ sở vật chất, nhân sự và hiệu quả tài chính của Nova Global School.'
 }
 
 function ChatWidget() {
@@ -228,115 +282,28 @@ function ChatWidget() {
 }
 
 function App() {
-  const containerRef = useRef<HTMLDivElement>(null)
-
   useEffect(() => {
     const previousLang = document.documentElement.lang
-    const previousClassName = document.documentElement.className
+    const hadClass = document.documentElement.classList.contains(HTML_CLASS_NAME)
 
     document.title = REFERENCE_TITLE
     document.documentElement.lang = 'vi'
 
-    if (!document.documentElement.classList.contains(HTML_CLASS_NAME)) {
+    if (!hadClass) {
       document.documentElement.classList.add(HTML_CLASS_NAME)
     }
 
-    const container = containerRef.current
-
-    if (!container) {
-      return
-    }
-
-    const header = container.querySelector('header')
-    const menuButton = container.querySelector<HTMLButtonElement>('header button[aria-expanded]')
-    const mobileMenu = header?.querySelector(':scope > div:last-of-type') as HTMLElement | null
-    const mobileLinks = mobileMenu?.querySelectorAll<HTMLAnchorElement>('a') ?? []
-    const videos = Array.from(container.querySelectorAll<HTMLVideoElement>('video'))
-    const cards = Array.from(container.querySelectorAll<HTMLElement>('.glow-card'))
-
-    const syncHeader = () => {
-      if (!header) {
-        return
-      }
-
-      const scrolled = window.scrollY > 24
-      header.classList.toggle('border-transparent', !scrolled)
-      header.classList.toggle('bg-transparent', !scrolled)
-      header.classList.toggle('border-white/10', scrolled)
-      header.classList.toggle('bg-ink/80', scrolled)
-      header.classList.toggle('backdrop-blur-xl', scrolled)
-      header.classList.toggle('backdrop-saturate-150', scrolled)
-    }
-
-    const setMenuState = (open: boolean) => {
-      if (!menuButton || !mobileMenu) {
-        return
-      }
-
-      menuButton.setAttribute('aria-expanded', String(open))
-      mobileMenu.classList.toggle('pointer-events-none', !open)
-      mobileMenu.classList.toggle('max-h-0', !open)
-      mobileMenu.classList.toggle('opacity-0', !open)
-      mobileMenu.classList.toggle('max-h-[80vh]', open)
-      mobileMenu.classList.toggle('opacity-100', open)
-    }
-
-    const handleMenuToggle = () => {
-      const open = menuButton?.getAttribute('aria-expanded') === 'true'
-      setMenuState(!open)
-    }
-
-    const handleGlow = (event: PointerEvent) => {
-      const target = event.target
-
-      if (!(target instanceof HTMLElement)) {
-        return
-      }
-
-      const card = target.closest<HTMLElement>('.glow-card')
-
-      if (!card) {
-        return
-      }
-
-      const bounds = card.getBoundingClientRect()
-      card.style.setProperty('--mx', `${event.clientX - bounds.left}px`)
-      card.style.setProperty('--my', `${event.clientY - bounds.top}px`)
-    }
-
-    menuButton?.addEventListener('click', handleMenuToggle)
-    mobileLinks.forEach((link) =>
-      link.addEventListener('click', () => {
-        setMenuState(false)
-      }),
-    )
-
-    syncHeader()
-    setMenuState(false)
-    window.addEventListener('scroll', syncHeader, { passive: true })
-    container.addEventListener('pointermove', handleGlow)
-
-    videos.forEach((video) => {
-      video.muted = true
-      void video.play().catch(() => {})
-    })
-
-    cards.forEach((card) => {
-      card.style.setProperty('--mx', '50%')
-      card.style.setProperty('--my', '50%')
-    })
-
     return () => {
       document.documentElement.lang = previousLang
-      document.documentElement.className = previousClassName
-      menuButton?.removeEventListener('click', handleMenuToggle)
-      window.removeEventListener('scroll', syncHeader)
-      container.removeEventListener('pointermove', handleGlow)
+
+      if (!hadClass) {
+        document.documentElement.classList.remove(HTML_CLASS_NAME)
+      }
     }
   }, [])
 
   return (
-    <div ref={containerRef} className="reference-clone">
+    <div className="reference-clone">
       <ReferencePage />
       <ChatWidget />
     </div>
