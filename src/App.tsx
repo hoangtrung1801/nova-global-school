@@ -167,7 +167,7 @@ function ChatWidget() {
             </span>
             <div className="leading-tight">
               <p className="text-[13px] font-semibold text-paper">{CHAT_COPY.studentTitle}</p>
-              <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-muted">
+              <p className="text-[10px] font-medium uppercase text-muted">
                 {CHAT_COPY.studentSubtitle}
               </p>
             </div>

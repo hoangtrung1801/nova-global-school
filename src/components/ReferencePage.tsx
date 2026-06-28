@@ -14,6 +14,8 @@ const NAV_ITEMS = [
   { href: '#thu-vien', label: 'Thư viện' },
 ] as const
 
+const SECTION_IDS = NAV_ITEMS.map((item) => item.href.slice(1))
+
 const QUICK_FACTS = [
   { label: 'Địa điểm', value: 'Hòa Xuân, Cẩm Lệ, Đà Nẵng' },
   { label: 'Chủ đầu tư', value: 'Tập đoàn Nguyễn Hoàng (NHG)' },
@@ -58,10 +60,25 @@ export function ReferencePage() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [activeScenario, setActiveScenario] = useState(2)
   const [isScrolled, setIsScrolled] = useState(false)
+  const [activeSectionId, setActiveSectionId] = useState(SECTION_IDS[0])
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 16)
+
+      const currentSection = SECTION_IDS.reduce((activeId, sectionId) => {
+        const section = document.getElementById(sectionId)
+
+        if (!section) {
+          return activeId
+        }
+
+        const rect = section.getBoundingClientRect()
+
+        return rect.top <= 160 ? sectionId : activeId
+      }, SECTION_IDS[0])
+
+      setActiveSectionId(currentSection)
     }
 
     handleScroll()
@@ -69,6 +86,56 @@ export function ReferencePage() {
 
     return () => {
       window.removeEventListener('scroll', handleScroll)
+    }
+  }, [])
+
+  useEffect(() => {
+    const page = pageRef.current
+
+    if (!page) {
+      return
+    }
+
+    const revealItems = Array.from(
+      page.querySelectorAll<HTMLElement>(
+        [
+          '.hero-copy > *',
+          '.hero-visual > *',
+          '.section-heading',
+          '.glow-card',
+          '.scenario-tabs',
+        ].join(','),
+      ),
+    )
+
+    revealItems.forEach((item, index) => {
+      item.classList.add('reveal-item')
+      item.style.setProperty('--reveal-delay', `${(index % 5) * 42}ms`)
+    })
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    if (prefersReducedMotion || !('IntersectionObserver' in window)) {
+      revealItems.forEach((item) => item.classList.add('is-visible'))
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible')
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      { rootMargin: '0px 0px -12% 0px', threshold: 0.14 },
+    )
+
+    revealItems.forEach((item) => observer.observe(item))
+
+    return () => {
+      observer.disconnect()
     }
   }, [])
 
@@ -146,7 +213,12 @@ export function ReferencePage() {
 
           <nav className="site-nav" aria-label="Điều hướng chính">
             {NAV_ITEMS.map((item) => (
-              <a key={item.href} href={item.href}>
+              <a
+                key={item.href}
+                aria-current={activeSectionId === item.href.slice(1) ? 'page' : undefined}
+                className={activeSectionId === item.href.slice(1) ? 'is-active' : undefined}
+                href={item.href}
+              >
                 {item.label}
               </a>
             ))}
@@ -159,7 +231,7 @@ export function ReferencePage() {
             <button
               aria-expanded={menuOpen}
               aria-label={menuOpen ? 'Đóng menu' : 'Mở menu'}
-              className="menu-toggle"
+              className={`menu-toggle${menuOpen ? ' is-open' : ''}`}
               type="button"
               onClick={() => setMenuOpen((currentValue) => !currentValue)}
             >
@@ -173,7 +245,13 @@ export function ReferencePage() {
         <div className={`mobile-nav${menuOpen ? ' is-open' : ''}`}>
           <nav aria-label="Điều hướng di động">
             {NAV_ITEMS.map((item) => (
-              <a key={item.href} href={item.href} onClick={() => setMenuOpen(false)}>
+              <a
+                key={item.href}
+                aria-current={activeSectionId === item.href.slice(1) ? 'page' : undefined}
+                className={activeSectionId === item.href.slice(1) ? 'is-active' : undefined}
+                href={item.href}
+                onClick={() => setMenuOpen(false)}
+              >
                 {item.label}
               </a>
             ))}
@@ -453,7 +531,10 @@ export function ReferencePage() {
                 ))}
               </div>
 
-              <article className={`scenario-panel glow-card ${SCENARIO_TONES[activeScenario]}`}>
+              <article
+                key={selectedScenario.name}
+                className={`scenario-panel glow-card ${SCENARIO_TONES[activeScenario]}`}
+              >
                 <div className="scenario-panel__headline">
                   <div>
                     <p className="scenario-panel__eyebrow">{selectedScenario.assumption}</p>
