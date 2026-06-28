@@ -15,11 +15,48 @@
 .nova-page__backdrop {
   position: fixed;
   inset: 0;
+  z-index: -2;
+  background: linear-gradient(180deg, rgba(10, 11, 13, 0.94), rgba(10, 11, 13, 0.98));
+}
+
+.section-band {
+  position: relative;
+  isolation: isolate;
+}
+
+.section-band::before {
+  content: '';
+  position: absolute;
+  inset: 0;
   z-index: -1;
+  opacity: var(--band-opacity, 0.1);
+  transform: scale(var(--band-scale, 1.04));
+  transform-origin: center center;
+  will-change: opacity, transform;
+  transition:
+    opacity 260ms ease-out,
+    transform 320ms ease-out;
   background:
+    linear-gradient(180deg, rgba(6, 8, 12, 0.72), rgba(6, 8, 12, 0.84)),
+    radial-gradient(circle at top left, rgba(240, 168, 48, 0.16), transparent 34%),
+    var(--section-cover) center center / cover no-repeat;
+}
+
+.section-band::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: var(--band-veil, 0.78);
+  transition: opacity 260ms ease-out;
+  background: linear-gradient(180deg, rgba(10, 11, 13, 0.86), rgba(10, 11, 13, 0.94));
+}
+
+.section-band--hero::before {
+  background:
+    linear-gradient(90deg, rgba(6, 8, 12, 0.8), rgba(6, 8, 12, 0.52) 48%, rgba(6, 8, 12, 0.76)),
     radial-gradient(circle at top left, rgba(240, 168, 48, 0.22), transparent 32%),
-    radial-gradient(circle at 85% 18%, rgba(82, 130, 255, 0.16), transparent 24%),
-    linear-gradient(180deg, rgba(10, 11, 13, 0.94), rgba(10, 11, 13, 0.98));
+    var(--section-cover) center center / cover no-repeat;
 }
 
 .site-shell {
@@ -304,6 +341,9 @@
   position: relative;
   overflow: hidden;
   min-height: 560px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01)),
+    rgba(12, 14, 18, 0.42);
 }
 
 .hero-card img,
@@ -321,7 +361,7 @@
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(180deg, rgba(8, 10, 14, 0.08), rgba(8, 10, 14, 0.82)),
+    linear-gradient(180deg, rgba(8, 10, 14, 0.04), rgba(8, 10, 14, 0.44)),
     linear-gradient(115deg, rgba(8, 10, 14, 0.12), rgba(8, 10, 14, 0.02) 48%, rgba(240, 168, 48, 0.12));
 }
 
@@ -330,6 +370,10 @@
   inset: auto 0 0;
   z-index: 1;
   padding: 28px;
+}
+
+.hero-card__overlay--static {
+  inset: auto 0 0;
 }
 
 .hero-card__overlay h2 {
@@ -412,7 +456,8 @@
   padding: 88px 0;
 }
 
-.content-section--muted {
+.content-section--muted,
+.content-section--soft {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0));
 }
 
@@ -446,6 +491,21 @@
 .stat-card,
 .metric-card {
   padding: 24px;
+}
+
+.copy-card,
+.feature-card,
+.tuition-card,
+.stat-card,
+.metric-card,
+.scenario-panel,
+.download-card,
+.contact-card,
+.spotlight-card,
+.facility-card,
+.fact-card,
+.metric-strip__item {
+  background: linear-gradient(180deg, rgba(12, 16, 22, 0.78), rgba(10, 12, 16, 0.86));
 }
 
 .copy-card h3,
@@ -934,5 +994,14 @@
 
   .content-section {
     padding: 72px 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section-band::before,
+  .section-band::after {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }
