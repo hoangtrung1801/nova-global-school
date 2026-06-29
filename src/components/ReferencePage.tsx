@@ -31,11 +31,11 @@ const QUICK_FACTS = [
 ] as const;
 
 const FACILITY_IMAGES = [
-    siteContent.gallery[3],
-    siteContent.gallery[2],
-    siteContent.gallery[4],
     siteContent.gallery[1],
-    siteContent.gallery[5],
+    siteContent.gallery[4],
+    siteContent.gallery[2],
+    siteContent.gallery[3],
+    siteContent.gallery[6],
 ] as const;
 
 const MOTION_EASE = [0.16, 1, 0.3, 1] as const;
@@ -585,8 +585,11 @@ export function ReferencePage() {
                                     className="overview-media glow-card"
                                 >
                                     <img
-                                        alt={siteContent.gallery[5].alt}
-                                        src={siteContent.gallery[5].src}
+                                        style={{
+                                            objectFit: "contain",
+                                        }}
+                                        alt={siteContent.gallery[0].alt}
+                                        src={siteContent.gallery[0].src}
                                     />
                                     <figcaption>
                                         <span>Vị trí campus</span>
@@ -1228,9 +1231,6 @@ export function ReferencePage() {
                                 as="article"
                                 className="contact-card glow-card"
                             >
-                                <p className="section-heading__eyebrow">
-                                    Chân trang thông tin
-                                </p>
                                 <h2>{siteContent.footer.project}</h2>
                                 <p>{siteContent.footer.location}</p>
 
