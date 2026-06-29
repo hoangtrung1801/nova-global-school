@@ -278,15 +278,6 @@ export function ReferencePage() {
                   </a>
                 ))}
               </div>
-
-              <dl className="metric-strip">
-                {siteContent.overview.stats.map((stat) => (
-                  <div key={stat.label} className="metric-strip__item glow-card">
-                    <dt>{stat.label}</dt>
-                    <dd>{stat.value}</dd>
-                  </div>
-                ))}
-              </dl>
             </div>
 
             <div className="hero-visual">
@@ -298,18 +289,27 @@ export function ReferencePage() {
                     Quy hoạch 21.390 m², công suất 920 học sinh, tập trung vào học thuật,
                     ngoại ngữ và trải nghiệm học đường an toàn.
                   </p>
+
+                  <dl className="hero-card__facts">
+                    {QUICK_FACTS.map((fact) => (
+                      <div key={fact.label}>
+                        <dt>{fact.label}</dt>
+                        <dd>{fact.value}</dd>
+                      </div>
+                    ))}
+                  </dl>
                 </div>
               </article>
-
-              <div className="fact-grid">
-                {QUICK_FACTS.map((fact) => (
-                  <article key={fact.label} className="fact-card glow-card">
-                    <p>{fact.label}</p>
-                    <strong>{fact.value}</strong>
-                  </article>
-                ))}
-              </div>
             </div>
+
+            <dl className="metric-strip">
+              {siteContent.overview.stats.map((stat) => (
+                <div key={stat.label} className="metric-strip__item glow-card">
+                  <dt>{stat.label}</dt>
+                  <dd>{stat.value}</dd>
+                </div>
+              ))}
+            </dl>
           </div>
         </section>
 
