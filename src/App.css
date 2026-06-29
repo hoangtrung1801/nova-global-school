@@ -116,12 +116,11 @@
   inset: 0;
   z-index: -1;
   opacity: var(--band-opacity, 0.1);
-  transform: scale(var(--band-scale, 1.04));
+  transform: scale(var(--band-scale, 1));
   transform-origin: center center;
-  will-change: opacity, transform;
+  will-change: opacity;
   transition:
-    opacity var(--motion-base) var(--ease-standard),
-    transform var(--motion-slow) var(--ease-emphasized);
+    opacity var(--motion-base) var(--ease-standard);
   background:
     linear-gradient(180deg, rgba(6, 8, 12, 0.72), rgba(6, 8, 12, 0.84)),
     radial-gradient(circle at top left, rgba(240, 168, 48, 0.16), transparent 34%),
@@ -621,7 +620,7 @@
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.14),
     0 22px 48px rgba(5, 9, 16, 0.26);
-  backdrop-filter: blur(18px) saturate(145%);
+  /* backdrop-filter: blur(18px) saturate(145%); */
 }
 
 .hero-card__overlay h2 {
@@ -773,12 +772,13 @@
 }
 
 .overview-layout {
-  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  grid-template-columns: minmax(0, 1.18fr) minmax(0, 0.82fr);
   grid-template-areas:
     'media stack'
-    'stats stats';
+    'stats stack';
   gap: 18px 22px;
   margin-top: 36px;
+  align-items: start;
 }
 
 .copy-card,
@@ -824,15 +824,19 @@
 .overview-media {
   position: relative;
   grid-area: media;
-  min-height: 470px;
+  display: flex;
+  flex-direction: column;
+  align-self: start;
+  min-height: 0;
   overflow: hidden;
 }
 
 .overview-media img {
-  position: absolute;
-  inset: 0;
+  position: static;
+  display: block;
   width: 100%;
-  height: 100%;
+  height: auto;
+  aspect-ratio: 1748 / 899;
   object-fit: cover;
   transition: transform 800ms var(--ease-emphasized);
 }
@@ -842,18 +846,13 @@
 }
 
 .overview-media figcaption {
-  position: absolute;
-  left: 22px;
-  right: 22px;
-  bottom: 22px;
-  padding: 18px 20px;
-  border: 1px solid rgba(255, 255, 255, 0.64);
-  border-radius: 22px;
-  background: rgba(255, 255, 255, 0.58);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.74),
-    0 18px 42px rgba(16, 32, 51, 0.12);
-  backdrop-filter: blur(20px) saturate(165%);
+  position: static;
+  margin: 0;
+  padding: 20px 22px;
+  border-top: 1px solid rgba(255, 255, 255, 0.52);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.24)),
+    linear-gradient(180deg, rgba(255, 246, 213, 0.16), rgba(228, 252, 255, 0.1));
 }
 
 .overview-media figcaption span,
@@ -901,14 +900,14 @@
 
 .overview-stats {
   grid-area: stats;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
   margin: 0;
 }
 
 .overview-stat {
   min-width: 0;
-  padding: 20px;
+  padding: 22px;
 }
 
 .overview-stat dd {
@@ -2008,7 +2007,7 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.78),
     inset 0 -1px 0 rgba(255, 255, 255, 0.18),
     0 22px 48px rgba(16, 32, 51, 0.12);
-  backdrop-filter: blur(26px) saturate(180%);
+  /* backdrop-filter: blur(26px) saturate(180%); */
 }
 
 .hero-card__tag {
@@ -2236,7 +2235,7 @@
   }
 
   .overview-media {
-    min-height: 380px;
+    min-height: 0;
   }
 
   .facility-carousel__slide {
@@ -2350,15 +2349,11 @@
   }
 
   .overview-media {
-    min-height: 300px;
+    min-height: 0;
   }
 
   .overview-media figcaption {
-    left: 16px;
-    right: 16px;
-    bottom: 16px;
     padding: 16px;
-    border-radius: 20px;
   }
 
   .overview-copy-card {

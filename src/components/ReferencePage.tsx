@@ -100,14 +100,13 @@ function useBandMotionStyle(
         damping: 32,
         restDelta: 0.001,
     });
-    const opacity = useTransform(smoothProgress, [0, 0.32, 1], [0.18, 1, 0.86]);
-    const scale = useTransform(smoothProgress, [0, 0.36, 1], [1.075, 1, 1.025]);
-    const veil = useTransform(smoothProgress, [0, 0.34, 1], [0.72, 0.28, 0.36]);
+    const opacity = useTransform(smoothProgress, [0, 0.52, 1], [0.14, 1, 1]);
+    const veil = useTransform(smoothProgress, [0, 0.52, 1], [0.72, 0.28, 0.28]);
 
     return {
         ...sectionCover(src),
         "--band-opacity": shouldReduceMotion ? 1 : opacity,
-        "--band-scale": shouldReduceMotion ? 1 : scale,
+        "--band-scale": 1,
         "--band-veil": shouldReduceMotion ? 0.28 : veil,
     } as MotionStyle;
 }
@@ -585,9 +584,6 @@ export function ReferencePage() {
                                     className="overview-media glow-card"
                                 >
                                     <img
-                                        style={{
-                                            objectFit: "contain",
-                                        }}
                                         alt={siteContent.gallery[0].alt}
                                         src={siteContent.gallery[0].src}
                                     />
