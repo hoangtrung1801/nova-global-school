@@ -1,5 +1,14 @@
-import type { CSSProperties } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 import { useEffect, useRef, useState } from 'react'
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+  useTransform,
+  type MotionStyle,
+  type Variants,
+} from 'framer-motion'
 import { siteContent } from '../content/siteContent'
 
 const NAV_ITEMS = [
@@ -28,8 +37,195 @@ const FACILITY_IMAGES = [
   siteContent.gallery[5],
 ] as const
 
+const MOTION_EASE = [0.16, 1, 0.3, 1] as const
+
+const revealVariants: Variants = {
+  hidden: {
+    opacity: 0,
+    y: 24,
+    scale: 0.985,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      duration: 0.52,
+      ease: MOTION_EASE,
+    },
+  },
+}
+
+const heroCopyVariants: Variants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.06,
+      delayChildren: 0.1,
+    },
+  },
+}
+
+const heroItemVariants: Variants = {
+  hidden: {
+    opacity: 0,
+    y: 26,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.56,
+      ease: MOTION_EASE,
+    },
+  },
+}
+
 function sectionCover(src: string) {
   return { '--section-cover': `url(${src})` } as CSSProperties
+}
+
+function useBandMotionStyle(src: string, targetRef: React.RefObject<HTMLElement | null>) {
+  const shouldReduceMotion = useReducedMotion()
+  const { scrollYProgress } = useScroll({
+    target: targetRef,
+    offset: ['start end', 'end start'],
+  })
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 120,
+    damping: 32,
+    restDelta: 0.001,
+  })
+  const opacity = useTransform(smoothProgress, [0, 0.32, 1], [0.18, 1, 0.86])
+  const scale = useTransform(smoothProgress, [0, 0.36, 1], [1.075, 1, 1.025])
+  const veil = useTransform(smoothProgress, [0, 0.34, 1], [0.72, 0.28, 0.36])
+
+  return {
+    ...sectionCover(src),
+    '--band-opacity': shouldReduceMotion ? 1 : opacity,
+    '--band-scale': shouldReduceMotion ? 1 : scale,
+    '--band-veil': shouldReduceMotion ? 0.28 : veil,
+  } as MotionStyle
+}
+
+function ScrollProgress() {
+  const shouldReduceMotion = useReducedMotion()
+  const { scrollYProgress } = useScroll()
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 110,
+    damping: 30,
+    restDelta: 0.001,
+  })
+
+  return (
+    <div className="scroll-progress" aria-hidden="true">
+      <motion.div
+        className="scroll-progress__bar"
+        style={{ scaleX: shouldReduceMotion ? 0 : scaleX }}
+      />
+    </div>
+  )
+}
+
+function HeroBand({
+  children,
+  coverSrc,
+}: {
+  children: ReactNode
+  coverSrc: string
+}) {
+  const bandRef = useRef<HTMLElement>(null)
+  const bandStyle = useBandMotionStyle(coverSrc, bandRef)
+
+  return (
+    <motion.section
+      ref={bandRef}
+      id="top"
+      className="hero-section section-band section-band--hero"
+      style={bandStyle}
+    >
+      {children}
+    </motion.section>
+  )
+}
+
+function SectionBand({
+  children,
+  coverSrc,
+}: {
+  children: ReactNode
+  coverSrc: string
+}) {
+  const bandRef = useRef<HTMLDivElement>(null)
+  const bandStyle = useBandMotionStyle(coverSrc, bandRef)
+
+  return (
+    <motion.div ref={bandRef} className="section-band" style={bandStyle}>
+      {children}
+    </motion.div>
+  )
+}
+
+function RevealBlock({
+  as = 'div',
+  children,
+  className,
+}: {
+  as?: 'article' | 'div' | 'figure'
+  children: ReactNode
+  className?: string
+}) {
+  const shouldReduceMotion = useReducedMotion()
+  const motionProps = {
+    className,
+    initial: shouldReduceMotion ? false : 'hidden',
+    whileInView: shouldReduceMotion ? undefined : 'visible',
+    viewport: { once: true, amount: 0.2, margin: '0px 0px -12% 0px' },
+    variants: revealVariants,
+  } as const
+
+  if (as === 'article') {
+    return <motion.article {...motionProps}>{children}</motion.article>
+  }
+
+  if (as === 'figure') {
+    return <motion.figure {...motionProps}>{children}</motion.figure>
+  }
+
+  return <motion.div {...motionProps}>{children}</motion.div>
+}
+
+function MotionLink({
+  children,
+  className,
+  href,
+  onClick,
+  rel,
+  target,
+}: {
+  children: ReactNode
+  className: string
+  href: string
+  onClick?: () => void
+  rel?: string
+  target?: string
+}) {
+  const shouldReduceMotion = useReducedMotion()
+
+  return (
+    <motion.a
+      className={className}
+      href={href}
+      rel={rel}
+      target={target}
+      whileHover={shouldReduceMotion ? undefined : { y: -2 }}
+      whileTap={shouldReduceMotion ? undefined : { scale: 0.98, y: 0 }}
+      transition={{ duration: 0.18, ease: MOTION_EASE }}
+      onClick={onClick}
+    >
+      {children}
+    </motion.a>
+  )
 }
 
 function SectionHeading({
@@ -42,19 +238,41 @@ function SectionHeading({
   body?: string
 }) {
   return (
-    <div className="section-heading">
+    <RevealBlock className="section-heading">
       <p className="section-heading__eyebrow">{eyebrow}</p>
       <h2>{title}</h2>
       {body ? <p className="section-heading__body">{body}</p> : null}
-    </div>
+    </RevealBlock>
+  )
+}
+
+function FinanceValue({ value }: { value: string }) {
+  const [primary, detail] = value.split(' · ')
+
+  return (
+    <strong className="finance-value">
+      <span>{primary}</span>
+      {detail ? <span className="finance-value__detail">{detail}</span> : null}
+    </strong>
   )
 }
 
 export function ReferencePage() {
-  const pageRef = useRef<HTMLDivElement>(null)
+  const shouldReduceMotion = useReducedMotion()
   const [menuOpen, setMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const [activeSectionId, setActiveSectionId] = useState(SECTION_IDS[0])
+  const [activeFacilityIndex, setActiveFacilityIndex] = useState(0)
+  const activeFacility = siteContent.facilities[activeFacilityIndex] ?? siteContent.facilities[0]
+  const activeFacilityImage = FACILITY_IMAGES[activeFacilityIndex] ?? FACILITY_IMAGES[0]
+
+  const showAdjacentFacility = (direction: -1 | 1) => {
+    setActiveFacilityIndex((currentIndex) => {
+      const nextIndex = currentIndex + direction
+
+      return (nextIndex + siteContent.facilities.length) % siteContent.facilities.length
+    })
+  }
 
   useEffect(() => {
     const handleScroll = () => {
@@ -83,123 +301,17 @@ export function ReferencePage() {
     }
   }, [])
 
-  useEffect(() => {
-    const page = pageRef.current
-
-    if (!page) {
-      return
-    }
-
-    const revealItems = Array.from(
-      page.querySelectorAll<HTMLElement>(
-        [
-          '.hero-copy > *',
-          '.hero-visual > *',
-          '.section-heading',
-          '.glow-card',
-          '.scenario-tabs',
-        ].join(','),
-      ),
-    )
-
-    revealItems.forEach((item, index) => {
-      item.classList.add('reveal-item')
-      item.style.setProperty('--reveal-delay', `${(index % 5) * 42}ms`)
-    })
-
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-
-    if (prefersReducedMotion || !('IntersectionObserver' in window)) {
-      revealItems.forEach((item) => item.classList.add('is-visible'))
-      return
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible')
-            observer.unobserve(entry.target)
-          }
-        })
-      },
-      { rootMargin: '0px 0px -12% 0px', threshold: 0.14 },
-    )
-
-    revealItems.forEach((item) => observer.observe(item))
-
-    return () => {
-      observer.disconnect()
-    }
-  }, [])
-
-  useEffect(() => {
-    const page = pageRef.current
-
-    if (!page) {
-      return
-    }
-
-    const bands = Array.from(page.querySelectorAll<HTMLElement>('.section-band'))
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    let frame = 0
-
-    const updateBandMotion = () => {
-      const viewportHeight = window.innerHeight
-
-      bands.forEach((band) => {
-        if (prefersReducedMotion) {
-          band.style.setProperty('--band-opacity', '1')
-          band.style.setProperty('--band-scale', '1')
-          band.style.setProperty('--band-veil', '0.18')
-          return
-        }
-
-        const rect = band.getBoundingClientRect()
-        const rawReveal = (viewportHeight - rect.top) / (viewportHeight * 1.05)
-        const clampedReveal = Math.min(1, Math.max(0, rawReveal))
-        const progress = 1 - (1 - clampedReveal) * (1 - clampedReveal)
-        const opacity = 0.08 + progress * 0.92
-        const scale = 1.085 - progress * 0.085
-        const veil = 0.82 - progress * 0.54
-
-        band.style.setProperty('--band-opacity', opacity.toFixed(3))
-        band.style.setProperty('--band-scale', scale.toFixed(3))
-        band.style.setProperty('--band-veil', veil.toFixed(3))
-      })
-
-      frame = 0
-    }
-
-    const queueBandMotion = () => {
-      if (frame !== 0) {
-        return
-      }
-
-      frame = window.requestAnimationFrame(updateBandMotion)
-    }
-
-    queueBandMotion()
-    window.addEventListener('scroll', queueBandMotion, { passive: true })
-    window.addEventListener('resize', queueBandMotion)
-
-    return () => {
-      if (frame !== 0) {
-        window.cancelAnimationFrame(frame)
-      }
-      window.removeEventListener('scroll', queueBandMotion)
-      window.removeEventListener('resize', queueBandMotion)
-    }
-  }, [])
-
   return (
-    <div ref={pageRef} className="nova-page">
+    <div className="nova-page">
       <div className="nova-page__backdrop" aria-hidden="true" />
+      <ScrollProgress />
 
       <header className={`site-header${isScrolled ? ' is-scrolled' : ''}`}>
         <div className="site-shell site-header__inner">
           <a className="brand-mark" href="#top">
-            <span className="brand-mark__badge">NGS</span>
+            <span className="brand-mark__badge" aria-hidden="true">
+              <img src="/icon.svg" alt="" />
+            </span>
             <span className="brand-mark__text">{siteContent.title}</span>
           </a>
 
@@ -217,9 +329,9 @@ export function ReferencePage() {
           </nav>
 
           <div className="site-header__actions">
-            <a className="button button--ghost site-header__cta" href="#lien-he">
+            <MotionLink className="button button--ghost site-header__cta" href="#lien-he">
               Liên hệ
-            </a>
+            </MotionLink>
             <button
               aria-expanded={menuOpen}
               aria-label={menuOpen ? 'Đóng menu' : 'Mở menu'}
@@ -247,100 +359,156 @@ export function ReferencePage() {
                 {item.label}
               </a>
             ))}
-            <a className="button mobile-nav__cta" href="#lien-he" onClick={() => setMenuOpen(false)}>
+            <MotionLink
+              className="button mobile-nav__cta"
+              href="#lien-he"
+              onClick={() => setMenuOpen(false)}
+            >
               Đăng ký tư vấn
-            </a>
+            </MotionLink>
           </nav>
         </div>
       </header>
 
       <main>
-        <section
-          id="top"
-          className="hero-section section-band section-band--hero"
-          style={sectionCover(siteContent.gallery[0].src)}
-        >
+        <HeroBand coverSrc={siteContent.gallery[0].src}>
           <div className="site-shell hero-layout">
-            <div className="hero-copy">
-              <p className="hero-copy__eyebrow">Dự án trường liên cấp tại cửa ngõ phía Nam Đà Nẵng</p>
-              <h1>{siteContent.title}</h1>
-              <p className="hero-copy__subtitle">{siteContent.subtitle}</p>
-              <p className="hero-copy__statement">{siteContent.statement}</p>
+            <motion.div
+              className="hero-copy"
+              initial={shouldReduceMotion ? false : 'hidden'}
+              animate="visible"
+              variants={heroCopyVariants}
+            >
+              <motion.p className="hero-copy__eyebrow" variants={heroItemVariants}>
+                Dự án trường liên cấp tại cửa ngõ phía Nam Đà Nẵng
+              </motion.p>
+              <motion.h1 variants={heroItemVariants}>{siteContent.title}</motion.h1>
+              <motion.p className="hero-copy__subtitle" variants={heroItemVariants}>
+                {siteContent.subtitle}
+              </motion.p>
+              <motion.p className="hero-copy__statement" variants={heroItemVariants}>
+                {siteContent.statement}
+              </motion.p>
 
-              <div className="hero-copy__actions">
+              <motion.div className="hero-copy__actions" variants={heroItemVariants}>
                 {siteContent.ctas.map((cta, index) => (
-                  <a
+                  <MotionLink
                     key={cta.label}
                     className={`button${index === 0 ? '' : ' button--ghost'}`}
                     href={cta.href}
                   >
                     {cta.label}
-                  </a>
+                  </MotionLink>
                 ))}
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
 
-            <div className="hero-visual">
-              <article className="hero-card glow-card">
+            <motion.div
+              className="hero-visual"
+              initial={shouldReduceMotion ? false : { opacity: 0, x: 28, scale: 0.985 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              transition={{ duration: 0.62, delay: 0.18, ease: MOTION_EASE }}
+            >
+              <motion.article
+                className="hero-card glow-card"
+                whileHover={shouldReduceMotion ? undefined : { y: -4, scale: 1.01 }}
+                transition={{ duration: 0.22, ease: MOTION_EASE }}
+              >
+                <img
+                  className="hero-card__media"
+                  alt={siteContent.gallery[0].alt}
+                  src={siteContent.heroImage}
+                />
                 <div className="hero-card__overlay hero-card__overlay--static">
-                  <p className="hero-card__tag">Trường liên cấp quốc tế</p>
-                  <h2>Campus hiện đại cho học sinh THCS - THPT</h2>
-                  <p>
-                    Quy hoạch 21.390 m², công suất 920 học sinh, tập trung vào học thuật,
-                    ngoại ngữ và trải nghiệm học đường an toàn.
-                  </p>
+                  <div className="hero-card__content">
+                    <p className="hero-card__tag">Trường liên cấp quốc tế</p>
+                    <h2>Campus hiện đại cho học sinh THCS - THPT</h2>
+                    <p>
+                      Quy hoạch 21.390 m², công suất 920 học sinh, tập trung vào học thuật,
+                      ngoại ngữ và trải nghiệm học đường an toàn.
+                    </p>
 
-                  <dl className="hero-card__facts">
-                    {QUICK_FACTS.map((fact) => (
-                      <div key={fact.label}>
-                        <dt>{fact.label}</dt>
-                        <dd>{fact.value}</dd>
-                      </div>
-                    ))}
-                  </dl>
+                    <dl className="hero-card__facts">
+                      {QUICK_FACTS.map((fact) => (
+                        <div key={fact.label}>
+                          <dt>{fact.label}</dt>
+                          <dd>{fact.value}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  </div>
                 </div>
-              </article>
-            </div>
+              </motion.article>
+            </motion.div>
 
-            <dl className="metric-strip">
+            <motion.dl
+              className="metric-strip"
+              initial={shouldReduceMotion ? false : 'hidden'}
+              animate="visible"
+              variants={heroCopyVariants}
+            >
               {siteContent.overview.stats.map((stat) => (
-                <div key={stat.label} className="metric-strip__item glow-card">
+                <motion.div key={stat.label} className="metric-strip__item glow-card" variants={heroItemVariants}>
                   <dt>{stat.label}</dt>
                   <dd>{stat.value}</dd>
-                </div>
+                </motion.div>
               ))}
-            </dl>
+            </motion.dl>
           </div>
-        </section>
+        </HeroBand>
 
-        <div className="section-band" style={sectionCover(siteContent.gallery[5].src)}>
+        <SectionBand coverSrc={siteContent.gallery[5].src}>
           <section id="tong-quan" className="content-section">
             <div className="site-shell">
               <SectionHeading
                 eyebrow="Giới thiệu tổng quan"
-                title="Trường liên cấp tại Hòa Xuân, Cẩm Lệ, Đà Nẵng"
+                title="Tổng quan dự án"
                 body="Các thông tin chính về vị trí, chủ đầu tư và quy mô được rút gọn để phụ huynh quét nhanh."
               />
 
-              <div className="overview-grid">
-                <article className="copy-card glow-card">
-                  <h3>Vị trí “tọa độ vàng” kết nối</h3>
-                  <p>{siteContent.overview.location}</p>
-                </article>
-
-                <article className="copy-card glow-card">
-                  <h3>Chủ đầu tư và đơn vị phát triển</h3>
-                  <p>{siteContent.overview.developer}</p>
-                </article>
-
-                <article className="copy-card copy-card--wide glow-card">
-                  <h3>Phân khúc đào tạo và công suất thiết kế</h3>
-                  <p>{siteContent.overview.scale}</p>
-                </article>
-
-                <article className="image-card glow-card">
+              <div className="overview-layout">
+                <RevealBlock as="figure" className="overview-media glow-card">
                   <img alt={siteContent.gallery[5].alt} src={siteContent.gallery[5].src} />
-                </article>
+                  <figcaption>
+                    <span>Vị trí campus</span>
+                    <strong>Đường Đá Bàn 7, Hòa Xuân, Cẩm Lệ</strong>
+                  </figcaption>
+                </RevealBlock>
+
+                <div className="overview-stack">
+                  <RevealBlock as="article" className="copy-card overview-copy-card glow-card">
+                    <span className="overview-copy-card__number">01</span>
+                    <div>
+                      <h3>Vị trí “tọa độ vàng” kết nối</h3>
+                      <p>{siteContent.overview.location}</p>
+                    </div>
+                  </RevealBlock>
+
+                  <RevealBlock as="article" className="copy-card overview-copy-card glow-card">
+                    <span className="overview-copy-card__number">02</span>
+                    <div>
+                      <h3>Chủ đầu tư và đơn vị phát triển</h3>
+                      <p>{siteContent.overview.developer}</p>
+                    </div>
+                  </RevealBlock>
+
+                  <RevealBlock as="article" className="copy-card overview-copy-card glow-card">
+                    <span className="overview-copy-card__number">03</span>
+                    <div>
+                      <h3>Phân khúc đào tạo và công suất thiết kế</h3>
+                      <p>{siteContent.overview.scale}</p>
+                    </div>
+                  </RevealBlock>
+                </div>
+
+                <dl className="overview-stats">
+                  {siteContent.overview.stats.map((stat) => (
+                    <RevealBlock key={stat.label} className="overview-stat glow-card">
+                      <dt>{stat.label}</dt>
+                      <dd>{stat.value}</dd>
+                    </RevealBlock>
+                  ))}
+                </dl>
               </div>
             </div>
           </section>
@@ -349,150 +517,266 @@ export function ReferencePage() {
             <div className="site-shell">
               <SectionHeading
                 eyebrow="Chương trình đào tạo cốt lõi"
-                title="Chương trình học cân bằng giữa học thuật, ngoại ngữ và kỹ năng"
+                title="Chương trình đào tạo"
                 body="Nova Global School đặt ngoại ngữ, năng lực học thuật và phát triển con người trong cùng một lộ trình."
               />
 
               <div className="card-grid card-grid--triple">
                 {siteContent.academic.map((item) => (
-                  <article key={item.title} className="feature-card glow-card">
+                  <RevealBlock key={item.title} as="article" className="feature-card glow-card">
                     <p className="feature-card__index">{item.title}</p>
                     <h3>{item.title}</h3>
                     <p>{item.body}</p>
-                  </article>
+                  </RevealBlock>
                 ))}
               </div>
             </div>
           </section>
-        </div>
+        </SectionBand>
 
-        <div className="section-band" style={sectionCover(siteContent.gallery[3].src)}>
+        <SectionBand coverSrc={siteContent.gallery[3].src}>
           <section id="co-so-vat-chat" className="content-section">
             <div className="site-shell facilities-layout">
-              <div className="facilities-summary">
-                <SectionHeading
-                  eyebrow="Cơ sở vật chất và hạ tầng kỹ thuật"
-                  title="Campus hiện đại cho học tập, thể thao và đời sống học đường"
-                  body="Các hạng mục quan trọng được nhóm theo nhu cầu học tập, sinh hoạt và an toàn."
-                />
+              <SectionHeading
+                eyebrow="Cơ sở vật chất và hạ tầng kỹ thuật"
+                title="Cơ sở vật chất"
+                body="Các hạng mục quan trọng được nhóm theo nhu cầu học tập, sinh hoạt và an toàn."
+              />
 
-                <article className="spotlight-card glow-card">
-                  <img alt={siteContent.gallery[1].alt} src={siteContent.gallery[1].src} />
-                  <div className="spotlight-card__body">
-                    <h3>Không gian học tập mở, vận hành theo chuẩn trường hiện đại</h3>
-                    <p>
-                      Phòng học, nhà ăn, an ninh và xe buýt được tổ chức như một campus học đường
-                      an toàn, dễ vận hành.
-                    </p>
+              <RevealBlock as="article" className="facility-carousel glow-card">
+                <motion.div
+                  key={activeFacility.title}
+                  className="facility-carousel__slide"
+                  initial={shouldReduceMotion ? false : { opacity: 0, x: 18 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.34, ease: MOTION_EASE }}
+                >
+                  <div className="facility-carousel__media">
+                    <img alt={activeFacilityImage.alt} src={activeFacilityImage.src} />
                   </div>
-                </article>
-              </div>
 
-              <div className="facility-list">
-                {siteContent.facilities.map((item, index) => (
-                  <article key={item.title} className="facility-card glow-card">
-                    <img alt={FACILITY_IMAGES[index].alt} src={FACILITY_IMAGES[index].src} />
-                    <div className="facility-card__body">
-                      <h3>{item.title}</h3>
-                      <p>{item.body}</p>
-                    </div>
-                  </article>
-                ))}
-              </div>
+                  <div className="facility-carousel__content" aria-live="polite">
+                    <p className="facility-carousel__count">
+                      {String(activeFacilityIndex + 1).padStart(2, '0')} /{' '}
+                      {String(siteContent.facilities.length).padStart(2, '0')}
+                    </p>
+                    <h3>{activeFacility.title}</h3>
+                    <p>{activeFacility.body}</p>
+                  </div>
+                </motion.div>
+
+                <div className="facility-carousel__controls">
+                  <button
+                    aria-label="Xem hạng mục trước"
+                    className="facility-carousel__arrow"
+                    type="button"
+                    onClick={() => showAdjacentFacility(-1)}
+                  >
+                    ‹
+                  </button>
+                  <div className="facility-carousel__dots" aria-label="Chọn hạng mục">
+                    {siteContent.facilities.map((item, index) => (
+                      <button
+                        key={item.title}
+                        aria-label={`Xem ${item.title}`}
+                        aria-pressed={activeFacilityIndex === index}
+                        className={activeFacilityIndex === index ? 'is-active' : undefined}
+                        type="button"
+                        onClick={() => setActiveFacilityIndex(index)}
+                      />
+                    ))}
+                  </div>
+                  <button
+                    aria-label="Xem hạng mục tiếp theo"
+                    className="facility-carousel__arrow"
+                    type="button"
+                    onClick={() => showAdjacentFacility(1)}
+                  >
+                    ›
+                  </button>
+                </div>
+
+                <div className="facility-carousel__thumbs">
+                  {siteContent.facilities.map((item, index) => (
+                    <button
+                      key={item.title}
+                      aria-label={`Chọn ${item.title}`}
+                      aria-pressed={activeFacilityIndex === index}
+                      className={activeFacilityIndex === index ? 'is-active' : undefined}
+                      type="button"
+                      onClick={() => setActiveFacilityIndex(index)}
+                    >
+                      <img alt="" src={FACILITY_IMAGES[index].src} />
+                      <span>{item.title}</span>
+                    </button>
+                  ))}
+                </div>
+              </RevealBlock>
             </div>
           </section>
-        </div>
+        </SectionBand>
 
-        <div className="section-band" style={sectionCover(siteContent.gallery[4].src)}>
+        <SectionBand coverSrc={siteContent.gallery[4].src}>
           <section id="hoc-phi" className="content-section">
             <div className="site-shell">
               <SectionHeading
-                eyebrow="Chính sách học phí và ưu đãi tuyển sinh"
-                title="Học phí rõ ràng cho THCS và THPT"
+                eyebrow="Chương trình học phí và ưu đãi tuyển sinh"
+                title="Học phí & ưu đãi"
               />
 
               <div className="tuition-layout">
                 <div className="card-grid card-grid--triple">
                   {siteContent.tuition.map((item) => (
-                    <article key={item.title} className="tuition-card glow-card">
-                      <p className="tuition-card__label">{item.title}</p>
-                      <h3>{item.value}</h3>
-                      <p>{item.body}</p>
-                    </article>
+                    <RevealBlock key={item.title} as="article" className="tuition-card glow-card">
+                      <div className="tuition-card__header">
+                        <span className={`tuition-card__badge tuition-card__badge--${item.title.toLowerCase().includes('thcs') ? 'thcs' : item.title.toLowerCase().includes('thpt') ? 'thpt' : 'uniform'}`}>
+                          {item.title.toLowerCase().includes('thcs') ? 'THCS' : item.title.toLowerCase().includes('thpt') ? 'THPT' : 'Đồng phục'}
+                        </span>
+                        <p className="tuition-card__label">{item.title}</p>
+                      </div>
+                      <div className="tuition-card__value">
+                        {(() => {
+                          const parts = item.value.split(' / ')
+                          if (parts.length === 2) {
+                            const [val, period] = parts
+                            const num = val.replace(' VNĐ', '')
+                            return (
+                              <>
+                                <span className="tuition-card__number">{num}</span>
+                                <div className="tuition-card__period">
+                                  <span className="tuition-card__currency">VNĐ</span>
+                                  <span className="tuition-card__term">/ {period}</span>
+                                </div>
+                              </>
+                            )
+                          }
+                          return item.value
+                        })()}
+                      </div>
+                      <p className="tuition-card__body">{item.body}</p>
+                    </RevealBlock>
                   ))}
                 </div>
 
-                <article className="copy-card glow-card">
-                  <h3>Chính sách đặc quyền mùa tuyển sinh đầu tiên</h3>
-                  <ul className="bullet-list">
-                    {siteContent.incentives.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                </article>
+                <RevealBlock as="article" className="tuition-incentives glow-card">
+                  <div className="tuition-incentives__header">
+                    <span className="tuition-incentives__tag">Tuyển sinh đầu tiên</span>
+                    <h3>Chính sách đặc quyền mùa tuyển sinh</h3>
+                  </div>
+                  <div className="tuition-incentives__grid">
+                    {siteContent.incentives.map((item, index) => {
+                      const titles = [
+                        'Lộ trình ổn định',
+                        'Đóng phí sớm',
+                        'Ưu đãi & Học bổng'
+                      ]
+                      const icons = [
+                        <svg key="shield" className="incentive-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
+                        <svg key="calendar" className="incentive-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>,
+                        <svg key="users" className="incentive-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                      ]
+                      return (
+                        <div key={index} className="tuition-incentive-item">
+                          <div className="tuition-incentive-item__icon-wrapper">
+                            {icons[index]}
+                          </div>
+                          <div className="tuition-incentive-item__content">
+                            <h4>{titles[index]}</h4>
+                            <p>{item}</p>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </RevealBlock>
               </div>
             </div>
           </section>
 
-        </div>
+        </SectionBand>
 
-        <div className="section-band" style={sectionCover(siteContent.gallery[2].src)}>
+        <SectionBand coverSrc={siteContent.gallery[2].src}>
           <section id="tai-chinh" className="content-section">
             <div className="site-shell finance-layout">
-              <div>
-                <SectionHeading
-                  eyebrow="Thẩm định hiệu quả tài chính"
-                  title="Các chỉ số tài chính chính của dự án"
-                />
+              <div className="finance-column finance-column--left">
+                <div className="finance-intro">
+                  <SectionHeading
+                    eyebrow="Thẩm định hiệu quả tài chính"
+                    title="Chỉ số tài chính"
+                  />
+                </div>
 
-                <div className="card-grid">
+                <div className="card-grid finance-capital">
                   {siteContent.finance.capital.map((item) => (
-                    <article key={item.label} className="metric-card glow-card">
+                    <RevealBlock key={item.label} as="article" className="metric-card glow-card">
                       <p>{item.label}</p>
-                      <strong>{item.value}</strong>
-                    </article>
+                      <FinanceValue value={item.value} />
+                    </RevealBlock>
                   ))}
                 </div>
               </div>
 
-              <div>
+              <div className="finance-column finance-column--right">
                 <div className="finance-metrics">
                   {siteContent.finance.metrics.map((metric) => (
-                    <article key={metric.label} className="metric-card glow-card">
+                    <RevealBlock key={metric.label} as="article" className="metric-card glow-card">
                       <p>{metric.label}</p>
-                      <strong>{metric.value}</strong>
-                    </article>
+                      <FinanceValue value={metric.value} />
+                    </RevealBlock>
                   ))}
                 </div>
 
-                <article className="copy-card glow-card">
+                <RevealBlock as="article" className="copy-card glow-card finance-social">
                   <h3>Đóng góp địa phương</h3>
                   <p>{siteContent.finance.social}</p>
-                </article>
+                </RevealBlock>
               </div>
             </div>
           </section>
-        </div>
+        </SectionBand>
 
-        <div className="section-band" style={sectionCover(siteContent.gallery[1].src)}>
+        <SectionBand coverSrc={siteContent.gallery[1].src}>
           <section id="tai-lieu" className="content-section">
             <div className="site-shell">
               <SectionHeading
                 eyebrow="Hồ sơ PDF"
-                title="Tải hồ sơ đầy đủ của Nova Global School"
+                title="Tài liệu & hồ sơ"
               />
 
-              <article className="download-card glow-card">
+              <RevealBlock as="article" className="download-card glow-card">
                 <div>
                   <p className="download-card__eyebrow">{siteContent.downloads.title}</p>
                   <h3>Bản vẽ, chỉ tiêu và dữ liệu dự án</h3>
                   <p>{siteContent.downloads.body}</p>
                 </div>
 
-                <a className="button" href={siteContent.downloads.href} target="_blank" rel="noreferrer">
+                <MotionLink className="button" href={siteContent.downloads.href} target="_blank" rel="noreferrer">
                   Mở hồ sơ PDF
-                </a>
-              </article>
+                </MotionLink>
+              </RevealBlock>
+
+              <div className="document-grid">
+                {siteContent.downloads.documents.map((document) => (
+                  <RevealBlock key={document.href} as="article" className="document-card glow-card">
+                    <div className="document-card__icon" aria-hidden="true">
+                      PDF
+                    </div>
+                    <div className="document-card__body">
+                      <p className="download-card__eyebrow">{document.meta}</p>
+                      <h3>{document.title}</h3>
+                      <p>{document.body}</p>
+                    </div>
+                    <MotionLink
+                      className="button button--compact"
+                      href={document.href}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Mở tài liệu
+                    </MotionLink>
+                  </RevealBlock>
+                ))}
+              </div>
             </div>
           </section>
 
@@ -500,18 +784,19 @@ export function ReferencePage() {
             <div className="site-shell">
               <SectionHeading
                 eyebrow="Thư viện hình ảnh và phối cảnh 3D"
-                title="Hình ảnh campus, lớp học, thư viện và khu thể thao"
+                title="Thư viện hình ảnh"
               />
 
               <div className="gallery-grid">
                 {siteContent.gallery.map((item, index) => (
-                  <figure
+                  <RevealBlock
+                    as="figure"
                     key={item.alt}
                     className={`gallery-card glow-card${index === 0 || index === 5 ? ' gallery-card--wide' : ''}`}
                   >
                     <img alt={item.alt} loading={index > 1 ? 'lazy' : undefined} src={item.src} />
                     <figcaption>{item.alt}</figcaption>
-                  </figure>
+                  </RevealBlock>
                 ))}
               </div>
             </div>
@@ -519,7 +804,7 @@ export function ReferencePage() {
 
           <section id="lien-he" className="content-section content-section--contact content-section--soft">
             <div className="site-shell contact-layout">
-              <article className="contact-card glow-card">
+              <RevealBlock as="article" className="contact-card glow-card">
                 <p className="section-heading__eyebrow">Chân trang thông tin</p>
                 <h2>{siteContent.footer.project}</h2>
                 <p>{siteContent.footer.location}</p>
@@ -534,23 +819,23 @@ export function ReferencePage() {
                     <strong>{siteContent.footer.student}</strong>
                   </div>
                 </div>
-              </article>
+              </RevealBlock>
 
-              <article className="contact-card glow-card">
+              <RevealBlock as="article" className="contact-card glow-card">
                 <p className="contact-card__legal">{siteContent.footer.legal}</p>
                 <p className="contact-card__copy">{siteContent.footer.copyright}</p>
                 <div className="contact-card__actions">
-                  <a className="button" href={siteContent.downloads.href} target="_blank" rel="noreferrer">
+                  <MotionLink className="button" href={siteContent.downloads.href} target="_blank" rel="noreferrer">
                     Xem hồ sơ dự án
-                  </a>
-                  <a className="button button--ghost" href="#top">
+                  </MotionLink>
+                  <MotionLink className="button button--ghost" href="#top">
                     Quay lại đầu trang
-                  </a>
+                  </MotionLink>
                 </div>
-              </article>
+              </RevealBlock>
             </div>
           </section>
-        </div>
+        </SectionBand>
       </main>
     </div>
   )

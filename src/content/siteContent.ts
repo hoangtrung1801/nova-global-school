@@ -11,7 +11,7 @@ export const siteContent = {
   subtitle:
     'Trường liên cấp THCS - THPT tại Hòa Xuân, Cẩm Lệ, Đà Nẵng.',
   statement:
-    'Nova Global School kết hợp chương trình học thuật, tiếng Anh tăng cường và cơ sở vật chất hiện đại để chuẩn bị cho học sinh năng lực hội nhập.',
+    'Nova Global School kết hợp chương trình MOET, tiếng Anh tăng cường và campus hiện đại cho học sinh 11 - 17 tuổi.',
   ctas: [
     { label: 'Đăng ký tư vấn tuyển sinh', href: '#lien-he' },
     { label: 'Xem khuôn viên trường', href: '#thu-vien' },
@@ -19,11 +19,11 @@ export const siteContent = {
   heroImage: campusHero,
   overview: {
     location:
-      'Nova Global School nằm trên đường Đá Bàn 7, phường Hòa Xuân, quận Cẩm Lệ, Đà Nẵng; kết nối nhanh với Võ Chí Công, Quốc lộ 1A và các khu đô thị phía Nam thành phố.',
+      'Nova Global School nằm trên đường Đá Bàn 7, Hòa Xuân, Cẩm Lệ, Đà Nẵng; kết nối nhanh với Võ Chí Công, Quốc lộ 1A và khu Nam thành phố.',
     developer:
-      'Dự án được phát triển theo định hướng của Tập đoàn Nguyễn Hoàng (NHG), tập trung vào mô hình trường tư thục hiện đại và vận hành bền vững.',
+      'Dự án phát triển theo định hướng của Tập đoàn Nguyễn Hoàng (NHG), tập trung vào mô hình trường tư thục hiện đại và vận hành bền vững.',
     scale:
-      'Trường phục vụ học sinh 11 - 17 tuổi ở hai cấp THCS và THPT, với công suất tối đa 920 học sinh trên khu đất 21.390 m².',
+      'Trường phục vụ học sinh 11 - 17 tuổi ở hai cấp THCS và THPT, công suất tối đa 920 học sinh trên khu đất 21.390 m².',
     stats: [
       { value: '21.390 m²', label: 'Tổng diện tích đất quy hoạch' },
       { value: '12.643 m²', label: 'Tổng diện tích sàn xây dựng' },
@@ -34,7 +34,7 @@ export const siteContent = {
   academic: [
     {
       title: 'Sự giao thoa chuẩn mực',
-      body: 'Chương trình kết hợp khung MOET với định hướng đánh giá năng lực, giúp học sinh vững kiến thức và sẵn sàng chuyển tiếp.',
+      body: 'Chương trình kết hợp khung MOET với đánh giá năng lực, giúp học sinh vững kiến thức và sẵn sàng chuyển tiếp.',
     },
     {
       title: 'Ngoại ngữ là chìa khóa mở cửa thế giới',
@@ -81,7 +81,7 @@ export const siteContent = {
     {
       title: 'Chi phí đồng phục',
       value: '1,5 triệu VNĐ / năm',
-      body: 'Bao gồm 2 bộ đồng phục học thuật, 1 bộ đồ thể thao và 1 áo khoác nhận diện thương hiệu.',
+      body: 'Bao gồm 2 bộ đồng phục học thuật, 1 bộ đồ thể thao và 1 áo khoác thương hiệu.',
     },
   ],
   incentives: [
@@ -143,7 +143,7 @@ export const siteContent = {
       payback: '> 20 năm',
       status: 'Không khả thi',
       summary:
-        'Kịch bản xấu nhất cho thấy dự án cần chính sách khóa biểu phí lộ trình và duy trì tỷ lệ lấp đầy ở ngưỡng an toàn ngay từ năm đầu tiên để tránh rơi vào vùng không khả thi.',
+        'Kịch bản xấu nhất cho thấy dự án cần chính sách học phí theo lộ trình và duy trì tỷ lệ lấp đầy an toàn ngay từ năm đầu.',
     },
     {
       name: 'Xấu',
@@ -190,14 +190,28 @@ export const siteContent = {
     title: 'Hồ sơ dự án Nova Global School',
     body: 'Tải hồ sơ PDF để xem bản vẽ, chỉ tiêu tài chính, cơ cấu nhân sự và thông tin triển khai chi tiết.',
     href: contentPdf,
+    documents: [
+      {
+        title: 'Bản vẽ kiến trúc',
+        body: 'Hồ sơ bản vẽ kiến trúc của Nova Global School.',
+        meta: 'PDF · 92,2 MB',
+        href: '/docs/Kysu_118210054_Dinh%20Quoc%20Tuan_Ban%20ve%20Kien%20truc.pdf',
+      },
+      {
+        title: 'Bản vẽ kinh tế',
+        body: 'Hồ sơ bản vẽ kinh tế và dữ liệu tài chính dự án.',
+        meta: 'PDF · 2,5 MB',
+        href: '/docs/Kysu_118210054_Dinh%20Quoc%20Tuan_Ban%20ve%20Kinh%20te.pdf',
+      },
+    ],
   },
   gallery: [
-    { src: campusHero, alt: 'Phối cảnh tổng thể khuôn viên Nova Global School' },
-    { src: learningHall, alt: 'Không gian sinh hoạt và học tập mở' },
-    { src: libraryImage, alt: 'Thư viện và trung tâm học liệu' },
-    { src: classroomImage, alt: 'Phòng học tiêu chuẩn hiện đại' },
-    { src: sportsImage, alt: 'Không gian thể thao và hoạt động ngoại khóa' },
-    { src: aerialImage, alt: 'Góc nhìn tổng quan khu đất từ trên cao' },
+    { src: campusHero, alt: 'Phối cảnh tổng thể khuôn viên Nova Global School Đà Nẵng' },
+    { src: learningHall, alt: 'Không gian sinh hoạt và học tập mở cho học sinh THCS - THPT' },
+    { src: libraryImage, alt: 'Thư viện và trung tâm học liệu của Nova Global School' },
+    { src: classroomImage, alt: 'Phòng học hiện đại tại trường liên cấp Nova Global School' },
+    { src: sportsImage, alt: 'Khu thể thao và hoạt động ngoại khóa trong campus Hòa Xuân' },
+    { src: aerialImage, alt: 'Góc nhìn tổng quan khu đất Nova Global School từ trên cao' },
   ],
   footer: {
     legal: 'ĐỒ ÁN TỐT NGHIỆP - KHOA QUẢN LÍ DỰ ÁN - NGÀNH KINH TẾ XÂY DỰNG',
